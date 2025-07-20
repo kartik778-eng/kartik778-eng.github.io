@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Presentation - Network Cables</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Default transition for interactive mode */
+        .slide {
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* --- PRINT STYLES --- */
+        /* These styles are ONLY applied when printing or converting to PDF */
+        @media print {
+            /* Reset body styles for printing */
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+            }
+            
+            /* Hide navigation buttons and slide counter */
+            #navigation-controls, #slide-counter {
+                display: none !important;
+            }
+
+            /* Remove the presentation container's fixed aspect ratio */
+            #presentation-container {
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: auto !important;
+                box-shadow: none !important;
+                overflow: visible !important;
+            }
+
+            /* Make all slides visible and stack them */
+            .slide {
+                opacity: 1 !important;
+                position: relative !important;
+                display: block !important;
+                page-break-after: always; /* Creates a new page for each slide in the PDF */
+                border: 1px solid #ccc;
+                margin-bottom: 20px;
+                -webkit-print-color-adjust: exact; /* Ensures background colors and images print */
+                color-adjust: exact;
+            }
+
+            /* Ensure text colors are visible on dark backgrounds when printed */
+             .dark\:text-white { color: #fff !important; }
+             .dark\:text-gray-300 { color: #d1d5db !important; }
+             .dark\:text-blue-400 { color: #60a5fa !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto">
+        <!-- Slide Container -->
+        <div id="presentation-container" class="relative w-full aspect-video bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+            <!-- Slides will be injected here by JavaScript -->
+        </div>
+
+        <!-- Navigation Controls -->
+        <div id="navigation-controls" class="flex items-center justify-between mt-6 max-w-4xl mx-auto px-2">
+            <div id="slide-counter" class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Slide 1 / 11
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="prev-btn" class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Previous
+                </button>
+                <button id="next-btn" class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SLIDE CONTENT ---
+        const slidesData = [
+            {
+                type: 'title',
+                title: 'Types of Cables for Computer Networking',
+                subtitle: 'The physical media connecting our digital world'
+            },
+            {
+                type: 'list',
+                title: 'Why Do Cables Matter?',
+                points: [
+                    'They are the backbone of any wired network.',
+                    'Different cables suit different needs: speed, distance, and environment.',
+                    'Understanding them is key for network design and troubleshooting.',
+                    'The physical layer is the foundation of network communication.'
+                ]
+            },
+            {
+                type: 'columns',
+                title: 'Three Main Categories',
+                columns: [
+                    {
+                        heading: 'Twisted-Pair',
+                        text: 'Most common for LANs. Uses copper wires.',
+                        imageUrl: 'https://placehold.co/400x300/3b82f6/ffffff?text=Twisted-Pair'
+                    },
+                    {
+                        heading: 'Coaxial',
+                        text: 'Used for cable internet and television.',
+                        imageUrl: 'https://placehold.co/400x300/10b981/ffffff?text=Coaxial'
+                    },
+                    {
+                        heading: 'Fiber-Optic',
+                        text: 'Transmits data using light. For high speed and long distance.',
+                        imageUrl: 'https://placehold.co/400x300/8b5cf6/ffffff?text=Fiber-Optic'
+                    }
+                ]
+            },
+            {
+                type: 'deep-dive',
+                title: 'Deep Dive: Twisted-Pair Cable',
+                text: 'The most ubiquitous type of cabling found in modern Local Area Networks (LANs). It consists of pairs of insulated copper wires that are twisted together to cancel out electromagnetic interference (EMI) from other pairs and external sources. The number of twists per meter is a key factor in its performance.',
+                imageUrl: 'https://placehold.co/600x400/3b82f6/ffffff?text=Twisted-Pair+Diagram'
+            },
+            {
+                type: 'columns',
+                title: 'UTP vs. STP',
+                columns: [
+                    {
+                        heading: 'UTP (Unshielded)',
+                        text: 'Lighter, flexible, and inexpensive. The lack of shielding makes it vulnerable to high EMI. Perfect for home and office environments.'
+                    },
+                    {
+                        heading: 'STP (Shielded)',
+                        text: 'Includes a foil or braided shield to protect against interference. Used in environments with high EMI, like factories or near powerful motors.'
+                    }
+                ]
+            },
+            {
+                type: 'list',
+                title: 'Understanding "Cat" Categories',
+                points: [
+                    '<strong>Cat5e (Enhanced):</strong> Up to 1 Gbps. The standard for many years.',
+                    '<strong>Cat6:</strong> Up to 10 Gbps over shorter distances (~55m). Tighter twists.',
+                    '<strong>Cat6a (Augmented):</strong> Reliable 10 Gbps up to 100m. Better shielding.',
+                    '<strong>Cat7 & Cat8:</strong> For data centers. Extremely high speeds and heavy shielding.'
+                ]
+            },
+            {
+                type: 'deep-dive',
+                title: 'Deep Dive: Coaxial Cable',
+                text: 'Known for its use in cable TV and broadband internet. It has a central copper conductor, surrounded by insulation, a metallic shield, and an outer plastic jacket. This robust construction makes it highly resistant to physical damage and EMI, though it is less flexible than twisted-pair.',
+                imageUrl: 'https://placehold.co/600x400/10b981/ffffff?text=Coaxial+Layers'
+            },
+            {
+                type: 'deep-dive',
+                title: 'Deep Dive: Fiber-Optic Cable',
+                text: 'The pinnacle of data transmission technology. It sends data as pulses of light through thin strands of glass or plastic. This makes it completely immune to EMI and allows for incredibly high speeds over very long distances. It forms the backbone of the global internet.',
+                imageUrl: 'https://placehold.co/600x400/8b5cf6/ffffff?text=Light+Through+Fiber'
+            },
+            {
+                type: 'columns',
+                title: 'Single-Mode vs. Multi-Mode Fiber',
+                columns: [
+                    {
+                        heading: 'Single-Mode (SMF)',
+                        text: 'Has a very small core, allowing only one mode of light to propagate. Used by telecoms and ISPs for high bandwidth, long-haul connections spanning many kilometers.'
+                    },
+                    {
+                        heading: 'Multi-Mode (MMF)',
+                        text: 'Has a larger core that allows multiple modes of light. It\'s less expensive but limited to shorter distances, typically within a building or campus LAN.'
+                    }
+                ]
+            },
+            {
+                type: 'summary-table',
+                title: 'Cable Comparison',
+                headers: ['Feature', 'Twisted-Pair', 'Coaxial', 'Fiber-Optic'],
+                rows: [
+                    ['Speed', 'Good to Very High', 'Good', 'Extremely High'],
+                    ['Cost', 'Low', 'Medium', 'High'],
+                    ['Distance', 'Short (~100m)', 'Medium', 'Very Long (km)'],
+                    ['EMI Resistance', 'Low to Medium', 'High', 'Immune']
+                ]
+            },
+            {
+                type: 'final',
+                title: 'Questions?',
+                subtitle: 'Thank you for your attention.'
+            }
+        ];
+
+        // --- PRESENTATION LOGIC ---
+        // This part remains the same for the interactive web version
+        const presentationContainer = document.getElementById('presentation-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const slideCounter = document.getElementById('slide-counter');
+
+        let currentSlide = 0;
+
+        function createSlideHTML(slide, index) {
+            const isVisible = index === 0 ? '' : 'absolute opacity-0';
+            let contentHTML = '';
+
+            switch (slide.type) {
+                case 'title':
+                    contentHTML = `<div class="text-center"><h1 class="text-5xl md:text-6xl font-bold text-gray-800 dark:text-white">${slide.title}</h1><p class="mt-4 text-xl md:text-2xl text-gray-600 dark:text-gray-300">${slide.subtitle}</p></div>`;
+                    break;
+                case 'list':
+                    const listItems = slide.points.map(point => `<li class="mb-3 text-lg md:text-xl">${point}</li>`).join('');
+                    contentHTML = `<div><h2 class="text-4xl md:text-5xl font-bold mb-8 text-center text-gray-800 dark:text-white">${slide.title}</h2><ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2 pl-4">${listItems}</ul></div>`;
+                    break;
+                case 'columns':
+                    const columnItems = slide.columns.map(col => `
+                        <div class="flex-1 text-center">
+                            ${col.imageUrl ? `<img src="${col.imageUrl}" alt="${col.heading}" class="rounded-lg mb-4 w-full h-40 object-cover mx-auto">` : ''}
+                            <h3 class="text-2xl font-bold mb-3 text-blue-600 dark:text-blue-400">${col.heading}</h3>
+                            <p class="text-gray-700 dark:text-gray-300">${col.text}</p>
+                        </div>
+                    `).join('');
+                    contentHTML = `<div><h2 class="text-4xl md:text-5xl font-bold mb-12 text-center text-gray-800 dark:text-white">${slide.title}</h2><div class="flex flex-col md:flex-row gap-8">${columnItems}</div></div>`;
+                    break;
+                case 'deep-dive':
+                    contentHTML = `
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-bold mb-8 text-center text-gray-800 dark:text-white">${slide.title}</h2>
+                            <div class="flex flex-col md:flex-row items-center gap-8">
+                                <div class="md:w-1/2 text-gray-700 dark:text-gray-300 text-lg">${slide.text}</div>
+                                <div class="md:w-1/2"><img src="${slide.imageUrl}" alt="${slide.title}" class="rounded-lg shadow-lg w-full"></div>
+                            </div>
+                        </div>`;
+                    break;
+                case 'summary-table':
+                    const headerHTML = slide.headers.map(h => `<th class="p-3 text-left font-semibold text-gray-700 dark:text-gray-200">${h}</th>`).join('');
+                    const rowsHTML = slide.rows.map(row => {
+                        const cellsHTML = row.map((cell, i) => `<td class="p-3 ${i===0 ? 'font-bold text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-300'}">${cell}</td>`).join('');
+                        return `<tr class="border-b border-gray-200 dark:border-gray-700">${cellsHTML}</tr>`;
+                    }).join('');
+                    contentHTML = `
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-bold mb-8 text-center text-gray-800 dark:text-white">${slide.title}</h2>
+                            <table class="w-full text-lg rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+                                <thead class="bg-gray-50 dark:bg-gray-700"><tr>${headerHTML}</tr></thead>
+                                <tbody>${rowsHTML}</tbody>
+                            </table>
+                        </div>`;
+                    break;
+                case 'final':
+                    contentHTML = `<div class="text-center"><h1 class="text-6xl font-bold text-gray-800 dark:text-white">${slide.title}</h1><p class="mt-4 text-2xl text-gray-600 dark:text-gray-300">${slide.subtitle}</p></div>`;
+                    break;
+            }
+            return `<div id="slide-${index}" class="slide w-full h-full top-0 left-0 flex items-center justify-center p-8 md:p-12 ${isVisible}">${contentHTML}</div>`;
+        }
+
+        function renderSlides() {
+            presentationContainer.innerHTML = slidesData.map((slide, index) => createSlideHTML(slide, index)).join('');
+        }
+
+        function showSlide(index) {
+            document.querySelectorAll('.slide').forEach((slideEl, i) => {
+                if (i === index) {
+                    slideEl.classList.remove('opacity-0', 'absolute');
+                } else {
+                    slideEl.classList.add('opacity-0', 'absolute');
+                }
+            });
+            slideCounter.textContent = `Slide ${index + 1} / ${slidesData.length}`;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === slidesData.length - 1;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slidesData.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextBtn.click();
+            } else if (e.key === 'ArrowLeft') {
+                prevBtn.click();
+            }
+        });
+
+        renderSlides();
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
